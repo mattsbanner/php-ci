@@ -1,0 +1,36 @@
+name: Docker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  docker:
+    runs-on: ubuntu-22.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '7.4', '8.0' ]
+        node: [ '14.17.1' ]
+        composer: [ '2.3.10' ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: |
+          docker build --no-cache \
+          --tag ghcr.io/${{ github.actor }}/php-ci:php${{ matrix.php }}-composer${{ matrix.composer }}-node${{ matrix.node }} \
+          --build-arg PHP_VERSION=${{ matrix.php }} \
+          --build-arg NODE_VERSION=${{ matrix.node }} \
+          --build-arg COMPOSER_VERSION=${{ matrix.composer }} \
+          .
+
+      - name: Login to GitHub container registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image to GitHub container registry
+        run: docker push ghcr.io/${{ github.actor }}/php-ci:php${{ matrix.php }}-composer${{ matrix.composer }}-node${{ matrix.node }}
