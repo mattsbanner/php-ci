@@ -33,6 +33,7 @@ apt-get install -y \
   libtinfo5 \
   make \
   nginx \
+  openssh-client \
   pkg-config \
   python \
   rsync \
@@ -101,6 +102,11 @@ npm config set prefix /usr/local
 curl -LO https://deployer.org/deployer.phar
 mv deployer.phar /usr/local/bin/dep
 chmod +x /usr/local/bin/dep
+
+# Setup SSH and trust the some domains.
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
 # Configure Nginx to run containerised.
 echo "daemon off;" >> /etc/nginx/nginx.conf && \
