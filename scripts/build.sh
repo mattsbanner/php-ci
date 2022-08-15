@@ -97,6 +97,8 @@ php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/
 
 # Configure NPM.
 npm config set prefix /usr/local
+npm install -g npm
+npm install -g npx
 
 # Install Deployer
 curl -LO https://deployer.org/deployer.phar
